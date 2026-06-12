@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Money Tracker</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .wrapper {
+            width: 100%;
+            max-width: 420px;
+        }
+        .main-title {
+            text-align: center;
+            color: #1e3a5f;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            margin-top: 0;
+        }
+        .balance-card {
+            background-color: #2c3e50;
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin-bottom: 25px;
+        }
+        .balance-label {
+            font-size: 14px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .balance-amount {
+            font-size: 36px;
+            color: #2ecc71;
+            font-weight: bold;
+            margin: 10px 0 20px 0;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #475569;
+            padding-top: 15px;
+        }
+        .stat-col {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+        .stat-in {
+            color: #2ecc71;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .stat-out {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #4a5568;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background-color: #ffffff;
+            color: #333333;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input::placeholder {
+            color: #a0aec0;
+        }
+        input:focus {
+            outline: none;
+            border-color: #cbd5e1;
+        }
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            margin-top: 5px;
+        }
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .btn-income {
+            background-color: #2ecc71;
+        }
+        .btn-expense {
+            background-color: #e74c3c;
+        }
+        .logs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .logs-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d3748;
+            margin: 0;
+        }
+        .clear-btn {
+            background: none;
+            border: none;
+            color: #718096;
+            text-decoration: underline;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .log-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .log-item {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #2ecc71;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .log-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .log-desc {
+            font-size: 16px;
+            color: #333333;
+            font-weight: 500;
+        }
+        .log-date {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        .log-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .log-amount {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .log-amount.income { color: #2ecc71; }
+        .log-amount.expense { color: #e74c3c; }
+        .delete-x {
+            color: #cbd5e1;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .delete-x:hover {
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <h1 class="main-title">My Money Tracker</h1>
+    
+    <div class="balance-card">
+        <div class="balance-label">Net Balance (This Month)</div>
+        <div class="balance-amount" id="net-balance">+$0.00</div>
+        
+        <div class="stats-row">
+            <div class="stat-col">
+                <span class="stat-label">Total In</span>
+                <span class="stat-in" id="total-in">+$0.00</span>
+            </div>
+            <div class="stat-col">
+                <span class="stat-label">Total Out</span>
+                <span class="stat-out" id="total-out">-$0.00</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="description">Description / Note</label>
+        <input type="text" id="description" placeholder="e.g., Salary, Materials, Fuel...">
+    </div>
+
+    <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" step="0.01" placeholder="0.00">
+    </div>
+
+    <!-- Date added perfectly right here -->
+    <div class="form-group">
+        <label for="date">Date</label>
+        <input type="date" id="date">
+    </div>
+
+    <div class="btn-row">
+        <button class="btn btn-income" onclick="handleAdd('income')">+ Add Income</button>
+        <button class="btn btn-expense" onclick="handleAdd('expense')">- Add Expense</button>
+    </div>
+
+    <div class="logs-header">
+        <h2 class="logs-title">Recent Logs</h2>
+        <button class="clear-btn" onclick="clearLogs()">Clear Month</button>
+    </div>
+
+    <ul class="log-list" id="log-list"></ul>
+</div>
+
+<script>
+    // Automatically default input to today
+    document.getElementById('date').valueAsDate = new Date();
+
+    let logs = JSON.parse(localStorage.getItem('tracker_logs')) || [];
+
+    function updateDashboard() {
+        const list = document.getElementById('log-list');
+        list.innerHTML = '';
+        
+        let totalIn = 0;
+        let totalOut = 0;
+
+        // Display logs with newest on top
+        const displayLogs = [...logs].reverse();
+
+        displayLogs.forEach((item, index) => {
+            const actualIndex = logs.length - 1 - index;
+            const amt = parseFloat(item.amount);
+            
+            if (item.type === 'income') totalIn += amt;
+            else totalOut += amt;
+
+            const li = document.createElement('li');
+            li.className = 'log-item';
+            li.style.borderLeftColor = item.type === 'income' ? '#2ecc71' : '#e74c3c';
+
+            // Clean date format display (dd/mm/yyyy)
+            const parts = item.date.split('-');
+            const dateStr = parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : item.date;
+
+            li.innerHTML = `
+                <div class="log-left">
+                    <span class="log-desc">${item.description}</span>
+                    <span class="log-date">${dateStr}</span>
+                </div>
+                <div class="log-right">
+                    <span class="log-amount ${item.type === 'income' ? 'income' : 'expense'}">
+                        ${item.type === 'income' ? '+' : '-'}$${amt.toFixed(2)}
+                    </span>
+                    <button class="delete-x" onclick="deleteLog(${actualIndex})">×</button>
+                </div>
+            `;
+            list.appendChild(li);
+        });
+
+        const net = totalIn - totalOut;
+        
+        document.getElementById('total-in').innerText = `+$${totalIn.toFixed(2)}`;
+        document.getElementById('total-out').innerText = `-$${totalOut.toFixed(2)}`;
+        
+        const netEl = document.getElementById('net-balance');
+        if (net >= 0) {
+            netEl.innerText = `+$${net.toFixed(2)}`;
+            netEl.style.color = '#2ecc71';
+        } else {
+            netEl.innerText = `-$${Math.abs(net).toFixed(2)}`;
+            netEl.style.color = '#e74c3c';
+        }
+    }
+
+    function handleAdd(type) {
+        const desc = document.getElementById('description').value.trim();
+        const amt = parseFloat(document.getElementById('amount').value);
+        const dateVal = document.getElementById('date').value;
+
+        if (!desc || isNaN(amt) || amt <= 0 || !dateVal) {
+            alert('Please fill in all inputs correctly.');
+            return;
+        }
+
+        logs.push({ description: desc, amount: amt, type: type, date: dateVal });
+        localStorage.setItem('tracker_logs', JSON.stringify(logs));
+
+        document.getElementById('description').value = '';
+        document.getElementById('amount').value = '';
+        updateDashboard();
+    }
+
+    function deleteLog(idx) {
+        logs.splice(idx, 1);
+        localStorage.setItem('tracker_logs', JSON.stringify(logs));
+        updateDashboard();
+    }
+
+    function clearLogs() {
+        if(confirm("Clear all logs for this month?")) {
+            logs = [];
+            localStorage.setItem('tracker_logs', JSON.stringify(logs));
+            updateDashboard();
+        }
+    }
+
+    updateDashboard();
+</script>
+
+</body>
+</html>
